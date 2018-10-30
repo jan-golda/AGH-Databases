@@ -1,0 +1,4 @@
+INSERT INTO TRIPS (NAME, COUNTRY, "DATE", DESCRIPTION, SEATS_NUMBER) VALUES ('Windsurfing na Prasonissi', 'Grecja', TO_DATE('2019-06-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Plaża i silne wiatry ...', 6);
+INSERT INTO TRIPS (NAME, COUNTRY, "DATE", DESCRIPTION, SEATS_NUMBER) VALUES ('Wycieczka do Paryza', 'Francja', TO_DATE('2016-01-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Ciekawa wycieczka ...', 3);
+INSERT INTO TRIPS (NAME, COUNTRY, "DATE", DESCRIPTION, SEATS_NUMBER) VALUES ('Piękny Kraków', 'Polska', TO_DATE('2017-02-03 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Najciekawa wycieczka ...', 2);
+INSERT INTO TRIPS (NAME, COUNTRY, "DATE", DESCRIPTION, SEATS_NUMBER) VALUES ('Wieliczka', 'Polska', TO_DATE('2017-03-03 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Zadziwiająca kopalnia ...', 2);
