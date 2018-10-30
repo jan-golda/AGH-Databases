@@ -1,0 +1,9 @@
+create or replace view V_TRIPS_SEATS_2 as
+SELECT
+  t.TRIP_ID,
+  t.COUNTRY,
+  t."DATE",
+  t.NAME AS TRIP_NAME,
+  t.SEATS_NUMBER,
+  t.FREE_SEATS AS AVAILABLE_SEATS
+FROM TRIPS t
