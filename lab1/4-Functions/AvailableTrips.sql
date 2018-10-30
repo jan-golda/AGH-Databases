@@ -12,7 +12,7 @@ create or replace type T_AT_RECORD as object (
 create or replace type T_AT_TABLE as table of T_AT_RECORD;
 
 -- function
-create or replace function F_AVAILABLE_TRIPS_FILTER (v_country in varchar2, v_date_from in date, v_date_to in date) return T_AT_TABLE as
+create or replace function F_AVAILABLE_TRIPS (v_country in varchar2, v_date_from in date, v_date_to in date) return T_AT_TABLE as
   v_result T_AT_TABLE;
 begin
 
@@ -32,4 +32,4 @@ begin
   -- return data
   return v_result;
 
-end F_AVAILABLE_TRIPS_FILTER;
+end F_AVAILABLE_TRIPS;
