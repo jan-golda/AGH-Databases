@@ -1,0 +1,26 @@
+{
+  "name": "agh-db-rest",
+  "author": {
+    "name": "Jan Gołda",
+    "email": "jan.golda@gmail.com"
+  },
+  "version": "1.0.0",
+  "private": true,
+  "description": "AGH Databases curse - REST homework",
+  "main": "app/app.js",
+  "license": "MIT",
+  "scripts": {
+    "serve": "nodemon --ignore data --exec babel-node app/app.js"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "nodemon": "^1.18.9"
+  },
+  "dependencies": {
+    "express": "^4.16.4",
+    "lowdb": "^1.0.0",
+    "mysql": "^2.16.0"
+  }
+}
