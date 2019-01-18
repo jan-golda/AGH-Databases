@@ -1,6 +1,6 @@
 import express from "express";
 import {apiErrorHandler} from "./ApiError";
-import {patients, visits, index} from "./routes/index";
+import {patients, appointments, index} from "./routes/index";
 
 // setup
 const app = express();
@@ -14,7 +14,7 @@ app.use((req, res, next) => {
 // routing
 app.get("/", index);
 app.use("/patients", patients);
-app.use("/visits", visits);
+app.use("/appointments", appointments);
 
 // error handling
 app.use(apiErrorHandler);
