@@ -1,7 +1,6 @@
 import {Router} from "express";
 import ApiError from "../ApiError";
 
-// router
 export const router = Router();
 
 /**
