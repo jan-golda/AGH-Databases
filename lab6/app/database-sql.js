@@ -58,7 +58,12 @@ export function deletePatient(id, cb) {
   connection.query(`DELETE FROM 'patients' WHERE 'id'=${id}`, (err) => {
     if(err)
       throw new ApiError(500, "Sql error");
-    cb();
+
+    connection.query(`DELETE FROM 'appointments' WHERE 'patient'=${id}`, (err) => {
+      if(err)
+        throw new ApiError(500, "Sql error");
+      cb();
+    });
   });
 }
 
