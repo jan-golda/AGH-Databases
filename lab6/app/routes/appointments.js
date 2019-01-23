@@ -13,13 +13,13 @@ router.param("appointmentId", (req, res, next, appointmentId) => {
   if(isNaN(id))
     throw new ApiError(400, "Wrong format of appointment id, int expected");
 
-  const appointment = db.getAppointment(id);
+  db.getAppointment(id, (appointment) => {
+    if(appointment === undefined)
+      throw new ApiError(404, `There is no appointment with id: ${id}`);
 
-  if(appointment === undefined)
-    throw new ApiError(404, `There is no appointment with id: ${id}`);
-
-  req.appointment = appointment;
-  next();
+    req.appointment = appointment;
+    next();
+  });
 });
 
 
@@ -27,7 +27,9 @@ router.param("appointmentId", (req, res, next, appointmentId) => {
  * Route: get appointments
  */
 router.get("/", (req, res) => {
-  res.status(200).json(db.getAppointments());
+  db.getAppointments((appointments) => {
+    res.status(200).json(appointments);
+  });
 });
 
 
@@ -44,17 +46,20 @@ router.post("/", (req, res) => {
 
   const date = parseInt(req.query['date']);
   const type = parseInt(req.query['type']);
-  const patient = db.getPatient(parseInt(req.query['patient']));
 
-  if(isNaN(date))
-    throw new ApiError(400, "Wrong date format, expected epoch");
-  if(![1,2,3].includes(type))
-    throw new ApiError(400, "Wrong type, expected 1, 2 or 3");
-  if(patient === undefined)
-    throw new ApiError(400, `There is no patient with id: ${req.query['patient']}`);
+  db.getPatient(parseInt(req.query['patient']), (patient) => {
 
-  let appointment = db.createAppointment(date, type, patient.id);
-  res.status(201).json(appointment);
+    if(isNaN(date))
+      throw new ApiError(400, "Wrong date format, expected epoch");
+    if(![1,2,3].includes(type))
+      throw new ApiError(400, "Wrong type, expected 1, 2 or 3");
+    if(patient === undefined)
+      throw new ApiError(400, `There is no patient with id: ${req.query['patient']}`);
+
+    db.createAppointment(date, type, patient.id, (appointment) => {
+      res.status(201).json(appointment);
+    });
+  });
 });
 
 
@@ -89,12 +94,21 @@ router.put("/:appointmentId", (req, res) => {
   if(req.query['patient'] !== undefined){
     appointment.patient = parseInt(req.query['patient']);
 
-    if(db.getPatient(appointment.patient) === undefined)
-      throw new ApiError(400, `There is no patient with id: ${req.query['patient']}`);
+    db.getPatient(appointment.patient, (patient) => {
+      if(patient === undefined)
+        throw new ApiError(400, `There is no patient with id: ${req.query['patient']}`);
+
+      db.updateAppointment(appointment, () => {
+        res.status(200).json(appointment);
+      });
+    });
+  } else {
+    db.updateAppointment(appointment, () => {
+      res.status(200).json(appointment);
+    });
   }
 
-  db.updateAppointment(appointment);
-  res.status(200).json(appointment);
+
 });
 
 
@@ -102,6 +116,7 @@ router.put("/:appointmentId", (req, res) => {
  * Route: delete appointment
  */
 router.delete("/:appointmentId", (req, res) => {
-  db.deleteAppointment(req.appointment.id);
-  res.status(204).end();
+  db.deleteAppointment(req.appointment.id, () => {
+    res.status(204).end();
+  });
 });

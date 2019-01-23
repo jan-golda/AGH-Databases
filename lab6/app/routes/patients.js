@@ -13,13 +13,13 @@ router.param("patientId", (req, res, next, patientId) => {
   if(isNaN(id))
     throw new ApiError(400, "Wrong format of patient id, int expected");
 
-  const patient = db.getPatient(id);
+  db.getPatient(id, (patient) => {
+    if(patient === undefined)
+      throw new ApiError(404, `There is no patient with id: ${id}`);
 
-  if(patient === undefined)
-    throw new ApiError(404, `There is no patient with id: ${id}`);
-
-  req.patient = patient;
-  next();
+    req.patient = patient;
+    next();
+  });
 });
 
 
@@ -27,7 +27,9 @@ router.param("patientId", (req, res, next, patientId) => {
  * Route: get patients
  */
 router.get("/", (req, res) => {
-  res.status(200).json(db.getPatients());
+  db.getPatients((patients) => {
+    res.status(200).json(patients);
+  });
 });
 
 
@@ -41,8 +43,9 @@ router.post("/", (req, res) => {
   if(req.query['surname'] === undefined)
     throw new ApiError(400, "Missing query 'surname'");
 
-  let patient = db.createPatient(req.query.name, req.query.surname);
-  res.status(201).json(patient);
+  db.createPatient(req.query.name, req.query.surname, (patient) => {
+    res.status(201).json(patient);
+  });
 });
 
 
@@ -58,12 +61,14 @@ router.get("/:patientId", (req, res) => {
  * Route: update patient
  */
 router.put("/:patientId", (req, res) => {
-  let patient = db.updatePatient(
+  db.updatePatient(
     req.patient.id,
     req.query.name || req.patient.name,
-    req.query.surname || req.patient.surname
+    req.query.surname || req.patient.surname,
+    (patient) => {
+      res.status(200).json(patient);
+    }
   );
-  res.status(200).json(patient);
 });
 
 
@@ -71,6 +76,7 @@ router.put("/:patientId", (req, res) => {
  * Route: delete patient
  */
 router.delete("/:patientId", (req, res) => {
-  db.deletePatient(req.patient.id);
-  res.status(204).end();
+  db.deletePatient(req.patient.id, () => {
+    res.status(204).end();
+  });
 });

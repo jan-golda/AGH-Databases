@@ -14,8 +14,9 @@ export default class ApiError {
  * Express middleware for handling errors
  */
 export function apiErrorHandler(err, req, res, next) {
-  if(!(err instanceof ApiError))
-    return res.status(500).json({ error: "Internal server error" });
+  if(err instanceof ApiError)
+    return res.status(err.status | 500).json({ error: err.message });
 
-  res.status(err.status | 500).json({ error: err.message });
+  console.log(err);
+  res.status(500).json({ error: "Internal server error" });
 }

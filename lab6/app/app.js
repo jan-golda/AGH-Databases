@@ -20,4 +20,4 @@ app.use("/appointments", appointments);
 app.use(apiErrorHandler);
 
 // start server
-app.listen(3000);
+app.listen(3030);

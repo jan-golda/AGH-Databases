@@ -13,43 +13,56 @@ db.defaults({ patients: [], appointments: [] }).write();
 //  PATIENTS
 // ====================================================
 
-export function getPatient(id) {
-  return db.get("patients")
-    .find({ id: id })
-    .value();
+export function getPatient(id, cb) {
+  cb(
+    db.get("patients")
+      .find({ id: id })
+      .value()
+  );
 }
 
-export function getPatients() {
-  return db.get("patients")
-    .value();
+export function getPatients(cb) {
+  cb(
+    db.get("patients")
+      .value()
+  );
 }
 
-export function hasPatients() {
-  return db.get("patients")
-    .size()
-    .value() > 0;
+export function hasPatients(cb) {
+  cb(
+    db.get("patients")
+      .size()
+      .value() > 0
+  );
 }
 
-export function generatePatientId() {
-  if(!hasPatients())
-    return 1;
+export function generatePatientId(cb) {
+  hasPatients((hasPatients) => {
+    if(!hasPatients)
+      return cb(1);
 
-  return db.get("patients")
-    .last()
-    .value().id + 1;
+    cb(
+      db.get("patients")
+        .last()
+        .value().id + 1
+    );
+  });
 }
 
-export function createPatient(name, surname) {
-  let patient = { id: generatePatientId(), name, surname };
+export function createPatient(name, surname, cb) {
+  generatePatientId((id) => {
+    let patient = { id: id, name, surname };
 
-  db.get("patients")
-    .push(patient)
-    .write();
+    db.get("patients")
+      .push(patient)
+      .write();
 
-  return patient;
+    cb(patient);
+  });
+
 }
 
-export function deletePatient(id) {
+export function deletePatient(id, cb) {
   db.get("patients")
     .remove({ id: id })
     .write();
@@ -57,17 +70,19 @@ export function deletePatient(id) {
   db.get("appointments")
     .remove({ patient: id})
     .write();
+
+  cb();
 }
 
-export function updatePatient(id, name, surname) {
-  let patient = { id: id, name: name, surname: surname };
+export function updatePatient(id, name, surname, cb) {
+  let patient = { id, name, surname };
 
   db.get("patients")
     .find({id: id})
     .assign(patient)
     .write();
 
-  return patient;
+  cb(patient);
 }
 
 
@@ -75,53 +90,68 @@ export function updatePatient(id, name, surname) {
 //  VISITS
 // ====================================================
 
-export function getAppointment(id) {
-  return db.get("appointments")
-    .find({ id: id })
-    .value();
+export function getAppointment(id, cb) {
+  cb(
+    db.get("appointments")
+      .find({ id: id })
+      .value()
+  );
 }
 
-export function getAppointments() {
-  return db.get("appointments")
-    .value();
+export function getAppointments(cb) {
+  cb(
+    db.get("appointments")
+      .value()
+  );
 }
 
-export function hasAppointments() {
-  return db.get("appointments")
-    .size()
-    .value() > 0;
+export function hasAppointments(cb) {
+  cb(
+    db.get("appointments")
+      .size()
+      .value() > 0
+  );
 }
 
-export function generateAppointmentId() {
-  if(!hasAppointments())
-    return 1;
+export function generateAppointmentId(cb) {
+  hasAppointments((hasAppointments) => {
+    if(!hasAppointments)
+      return cb(1);
 
-  return db.get("appointments")
-    .last()
-    .value().id + 1;
+    cb(
+      db.get("appointments")
+        .last()
+        .value().id + 1
+    );
+  });
 }
 
-export function createAppointment(date, type, patient) {
-  let appointment = { id: generateAppointmentId(), date, type, patient };
+export function createAppointment(date, type, patient, cb) {
+  generateAppointmentId((id) => {
+    let appointment = { id, date, type, patient };
 
-  db.get("appointments")
-    .push(appointment)
-    .write();
+    db.get("appointments")
+      .push(appointment)
+      .write();
 
-  return appointment;
+    cb(appointment);
+  });
+
 }
 
-export function deleteAppointment(id) {
+export function deleteAppointment(id, cb) {
   db.get("appointments")
     .remove({ id: id })
     .write();
+
+  cb();
 }
 
-export function updateAppointment(appointment) {
+export function updateAppointment(appointment, cb) {
   db.get("appointments")
     .find({id: appointment.id})
     .assign(appointment)
     .write();
 
-  return appointment;
+  cb(appointment);
 }
